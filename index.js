@@ -2,20 +2,22 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './config/db.js';
+import authRoutes from './Routes/authRoutes.js';
 
 dotenv.config();
-// connectDB();
+
 
 const app = express();
-const port = process.env.port;
+const port = process.env.PORT||5001;
 
 app.use(cors());
 app.use(express.json());
 
+// Connect to MongoDB
+connectDB();
 
-
-// Mount routers
-// app.use('/api/auth', require('./routes/auth'));
+// Mount routes
+app.use('/api/auth', authRoutes);
 
 //test route
 app.get('/', (req, res) => {
