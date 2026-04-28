@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 export const loginAdmin = async (req, res) => {
   const { email, password } = req.body;
 
+  try {
   // Check if admin exists
   const admin = await Admin.findOne({ email });
   if (!admin) {
@@ -25,8 +26,14 @@ export const loginAdmin = async (req, res) => {
   });
 
   // Return token
-  res.json({ token ,
+  res.status(200).json({ 
+    token ,
     admin: admin._id,
     email: admin.email,
+    msg: 'Login successful',
   });
+} catch (error) {
+  console.error(error.message);
+  res.status(500).json({ msg: 'Server error' });
+  }
 }
