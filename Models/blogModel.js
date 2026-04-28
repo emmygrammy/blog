@@ -10,6 +10,10 @@ const blogSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  image: {
+    type: String,
+    public_id: String,
+  },
   admin: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Admin",
