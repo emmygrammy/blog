@@ -1,7 +1,7 @@
 import express from 'express';
 import { protectAdmin } from '../Middleware/authMiddleware.js';
-import { createBlog, getBlogs, getSingleBlog, deleteBlog,  updateBlog} from '../Controllers/blogController.js.js';
-import { uploadBlogImage, updateBlogImage, deleteBlogImage } from '../Controllers/blogImageController.js.js';
+import { createBlog, getBlogs, getSingleBlog, deleteBlog,  updateBlog} from '../Controllers/blogController.js';
+import { uploadBlogImage, updateBlogImage, deleteBlogImage } from '../Controllers/blogImageController.js';
 
 const router = express.Router();
 

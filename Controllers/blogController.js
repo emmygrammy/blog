@@ -102,7 +102,7 @@ export const deleteBlog = async (req, res) => {
             return res.status(403).json({ msg: 'Not authorized' });
         }
 
-        await post.deleteOne();
+        await post.findOneAndDelete(req.params.id);
 
         res.status(200).json({ msg: 'Blog deleted' });
 
