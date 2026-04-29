@@ -4,6 +4,7 @@ import cors from 'cors';
 import connectDB from './config/db.js';
 import authRoutes from './Routes/authRoutes.js';
 import blogRoutes from './Routes/blogRoutes.js';
+import questionRoutes from './Routes/questionRoutes.js';
 
 
 
@@ -22,6 +23,7 @@ connectDB();
 // Mount routes
 app.use('/api/auth', authRoutes);
 app.use('/api/blog', blogRoutes);
+app.use('/api/questions', questionRoutes);
 
 
 

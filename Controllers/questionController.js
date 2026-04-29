@@ -1,4 +1,4 @@
-import Question from "../models/question.js";
+import Question from "../Models/QuestionModel.js";
 
 
 // Create a new question(admin)
@@ -72,6 +72,84 @@ export const getSingleQuestion = async (req, res) => {
 
   } catch (err) {
     // Handle invalid MongoDB ObjectId
+    if (err.name === "CastError") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid question ID",
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+// Update a question(admin)
+export const updateQuestion = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const updatedQuestion = await Question.findByIdAndUpdate(
+      id,
+      req.body,
+      {
+        new: true,          // return updated doc
+        runValidators: true // enforce schema validation
+      }
+    ).lean();
+
+    if (!updatedQuestion) {
+      return res.status(404).json({
+        success: false,
+        message: "Question not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Question updated successfully",
+      data: updatedQuestion,
+    });
+
+  } catch (err) {
+    if (err.name === "CastError") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid question ID",
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+// Delete a question(admin)
+export const deleteQuestion = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const question = await Question.findById(id);
+
+    if (!question) {
+      return res.status(404).json({
+        success: false,
+        message: "Question not found",
+      });
+    }
+
+    await question.deleteOne();
+
+    res.json({
+      success: true,
+      message: "Question deleted successfully",
+    });
+
+  } catch (err) {
     if (err.name === "CastError") {
       return res.status(400).json({
         success: false,
