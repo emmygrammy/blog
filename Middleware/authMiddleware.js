@@ -5,11 +5,10 @@ export const protectAdmin = async (req, res, next) => {
   try {
     let token;
 
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
-    ) {
-      token = req.headers.authorization.split(" ")[1];
+    const authHeader = req.headers.authorization;
+
+    if (authHeader && authHeader.startsWith("Bearer")) {
+      token = authHeader.split(" ")[1];
     }
 
     if (!token) {
@@ -17,6 +16,8 @@ export const protectAdmin = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+
 
     req.admin = await Admin.findById(decoded.admin).select("-password");
 
@@ -27,6 +28,11 @@ export const protectAdmin = async (req, res, next) => {
     next();
 
   } catch (error) {
-    return res.status(401).json({ message: "Not authorized, token failed" });
+    console.log("JWT ERROR:", error.message);
+
+    return res.status(401).json({
+      message: "Not authorized, token failed",
+      error: error.message
+    });
   }
 };

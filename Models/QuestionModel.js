@@ -37,4 +37,7 @@ const questionSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Create unique index on question and year
+questionSchema.index({ question: 1, year: 1 }, { unique: true });
+
 export default mongoose.model("Question", questionSchema);

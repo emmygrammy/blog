@@ -1,39 +1,39 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from 'express';
-import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './config/db.js';
 import authRoutes from './Routes/authRoutes.js';
 import blogRoutes from './Routes/blogRoutes.js';
 import questionRoutes from './Routes/questionRoutes.js';
 
-
-
-dotenv.config();
-
+// ENV CHECK (important)
+if (!process.env.JWT_SECRET) {
+  console.error("❌ JWT_SECRET is missing in .env");
+  process.exit(1);
+}
 
 const app = express();
-const port = process.env.PORT||5001;
+const port = process.env.PORT || 5001;
 
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB
+// DB
 connectDB();
 
-// Mount routes
+// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/blog', blogRoutes);
 app.use('/api/questions', questionRoutes);
 
-
-
-//test route
+// Test route
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-// Start the server
+// Start server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-

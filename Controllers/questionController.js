@@ -6,12 +6,22 @@ export const createQuestion = async (req, res) => {
   try {
     const question = await Question.create(req.body);
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       data: question,
     });
+
   } catch (err) {
-    res.status(400).json({
+
+    // MongoDB duplicate error
+    if (err.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: "Question for this year already exists",
+      });
+    }
+
+    return res.status(500).json({
       success: false,
       message: err.message,
     });
