@@ -21,8 +21,8 @@ export const loginAdmin = async (req, res) => {
   }
 
   // Create JWT token
-  const token = jwt.sign({ admin: admin._id }, process.env.secret, {
-    expiresIn: process.env.expire,
+  const token = jwt.sign({ admin: admin._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE,
   });
 
   // Return token
