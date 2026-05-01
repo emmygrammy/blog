@@ -8,7 +8,7 @@ export const createBlog = async (req, res) => {
         const blog = await Blog.create({
             title,
             content,
-            admin: req.user.id,
+            admin: req.admin._id,
         });
 
         res.status(201).json({
@@ -98,7 +98,7 @@ export const deleteBlog = async (req, res) => {
             return res.status(404).json({ msg: 'Post not found' });
         }
 
-        if (post.admin.toString() !== req.user.id) {
+        if (post.admin.toString() !== req.admin._id) {
             return res.status(403).json({ msg: 'Not authorized' });
         }
 
