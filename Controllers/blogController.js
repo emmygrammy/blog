@@ -24,24 +24,49 @@ export const createBlog = async (req, res) => {
 
 // GET ALL BLOGS
 export const getBlogs = async (req, res) => {
-    try {
-        const posts = await Blog.find().sort({ createdAt: -1 });
+  try {
+    // 🔹 1. Get query params
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || "";
 
-        res.status(200).json({
-            msg: 'Blogs retrieved',
-            posts
-        });
+    // 🔹 2. Build search query
+    const searchQuery = {
+      $or: [
+        { title: { $regex: search, $options: "i" } },
+        { content: { $regex: search, $options: "i" } }
+      ]
+    };
 
-    } catch (error) {
-        res.status(500).json({ msg: error.message });
-    }
+    // 🔹 3. Count total results
+    const total = await Blog.countDocuments(searchQuery);
+
+    // 🔹 4. Fetch paginated data
+    const posts = await Blog.find(searchQuery)
+      .populate("admin", "email")
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    // 🔹 5. Response
+    res.status(200).json({
+      success: true,
+      total,
+      page,
+      pages: Math.ceil(total / limit),
+      posts
+    });
+
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
 };
 
 
 // GET SINGLE BLOG
 export const getSingleBlog = async (req, res) => {
     try {
-        const post = await Blog.findById(req.params.id);
+        const post = await Blog.findById(req.params.id).populate('admin', 'email name'	);
 
         if (!post) {
             return res.status(404).json({ msg: 'Post not found' });

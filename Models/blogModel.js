@@ -6,14 +6,16 @@ const blogSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
+      trim: true,
     },
     content: {
       type: String,
       required: true,
+      trim: true,
     },
     image: {
-      url: String,
-      public_id: String,
+      url: { type: String, default: null },
+      public_id: { type: String, default: null },
     },
     admin: {
       type: mongoose.Schema.Types.ObjectId,
@@ -24,7 +26,10 @@ const blogSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// ✅ PUT IT HERE (after schema, before export)
+// 🔍 Search index
+blogSchema.index({ title: "text", content: "text" });
+
+// 🗑️ Delete hook (findOneAndDelete)
 blogSchema.post("findOneAndDelete", async function (doc) {
   try {
     if (doc?.image?.public_id) {
@@ -35,5 +40,15 @@ blogSchema.post("findOneAndDelete", async function (doc) {
   }
 });
 
-// ✅ THEN export model
+// 🗑️ Delete hook (deleteOne)
+blogSchema.post("deleteOne", { document: true }, async function () {
+  try {
+    if (this?.image?.public_id) {
+      await cloudinary.uploader.destroy(this.image.public_id);
+    }
+  } catch (err) {
+    console.error("Cloudinary delete failed:", err.message);
+  }
+});
+
 export default mongoose.model("Blog", blogSchema);
