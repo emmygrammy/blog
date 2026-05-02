@@ -66,8 +66,8 @@ export const updateBlog = async (req, res) => {
         if (!post) {
             return res.status(404).json({ msg: 'Post not found' });
         }
-
-        if (post.admin.toString() !== req.user.id) {
+         
+        if (post.admin.toString() !== req.admin._id.toString()) {
             return res.status(403).json({ msg: 'Not authorized' });
         }
 
@@ -97,12 +97,12 @@ export const deleteBlog = async (req, res) => {
         if (!post) {
             return res.status(404).json({ msg: 'Post not found' });
         }
-
-        if (post.admin.toString() !== req.admin._id) {
+         console.log(post.admin, req.admin._id);
+        if (post.admin.toString() !== req.admin._id.toString()) {
             return res.status(403).json({ msg: 'Not authorized' });
         }
 
-        await post.findOneAndDelete(req.params.id);
+        await Blog.findByIdAndDelete(req.params.id);
 
         res.status(200).json({ msg: 'Blog deleted' });
 

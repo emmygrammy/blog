@@ -4,6 +4,7 @@ import { uploadToCloudinary } from "../utils/uploadToCloudinary.js";
 
 
 // ADD IMAGE TO BLOG
+
 export const uploadBlogImage = async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.id);
@@ -12,13 +13,15 @@ export const uploadBlogImage = async (req, res) => {
             return res.status(404).json({ msg: "Blog not found" });
         }
 
-        if (blog.admin.toString() !== req.user.id) {
+        if (blog.admin.toString() !== req.admin._id.toString()) {
             return res.status(403).json({ msg: "Not authorized" });
         }
 
         if (!req.file) {
             return res.status(400).json({ msg: "No image uploaded" });
         }
+
+        console.log("FILE:", req.file); // good debug
 
         const result = await uploadToCloudinary(req.file.buffer);
 
@@ -35,6 +38,7 @@ export const uploadBlogImage = async (req, res) => {
         });
 
     } catch (error) {
+        console.error(error);
         res.status(500).json({ msg: error.message });
     }
 };
@@ -49,7 +53,7 @@ export const updateBlogImage = async (req, res) => {
             return res.status(404).json({ msg: "Blog not found" });
         }
 
-        if (blog.admin.toString() !== req.user.id) {
+        if (blog.admin.toString() !== req.admin._id.toString()) {
             return res.status(403).json({ msg: "Not authorized" });
         }
 
@@ -91,7 +95,7 @@ export const deleteBlogImage = async (req, res) => {
             return res.status(404).json({ msg: "Blog not found" });
         }
 
-        if (blog.admin.toString() !== req.user.id) {
+        if (blog.admin.toString() !== req.admin._id.toString()) {
             return res.status(403).json({ msg: "Not authorized" });
         }
 
