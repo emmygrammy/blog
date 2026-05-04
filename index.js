@@ -26,7 +26,8 @@ connectDB();
 // Routes
 app.use('/v1/api/auth', authRoutes);
 app.use('/v1/api/blog', blogRoutes)
-app.use('/v1//api/questions', questionRoutes);
+app.use('/v1/api/questions', questionRoutes);
+
 
 // Test route
 app.get('/', (req, res) => {
