@@ -31,7 +31,7 @@ app.use('/v1/api/questions', questionRoutes);
 
 // Test route
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('API is running and working well.......welcome to learnlift blog API!');
 });
 
 // Start server
