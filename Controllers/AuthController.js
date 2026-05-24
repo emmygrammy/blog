@@ -11,13 +11,14 @@ export const loginAdmin = async (req, res) => {
   // Check if admin exists
   const admin = await Admin.findOne({ email });
   if (!admin) {
-    return res.status(400).json({ msg: 'Admin not found' });
+    return res.status(400).json({ message: 'Admin not found' });
   }
+
 
   // Check password
   const isMatch = await bcrypt.compare(password, admin.password);
   if (!isMatch) {
-    return res.status(400).json({ msg: 'Password is incorrect' });
+    return res.status(400).json({ message: 'Password is incorrect' });
   }
 
   // Create JWT token
@@ -30,7 +31,7 @@ export const loginAdmin = async (req, res) => {
     token ,
     admin: admin._id,
     email: admin.email,
-    msg: 'Login successful',
+    message: 'Login successful',
   });
 } catch (error) {
   console.error(error.message);
