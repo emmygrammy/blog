@@ -1,39 +1,46 @@
 import Question from "../Models/QuestionModel.js";
 
 
-// Create a new question(admin)
+// CREATE QUESTION (ADMIN)
 export const createQuestion = async (req, res) => {
   try {
     const {
       question,
-      optionA,
-      optionB,
-      optionC,
-      optionD,
+      options,
       correctAnswer,
       explanation,
       subject,
       year,
     } = req.body;
 
-    if (!question || !optionA || !optionB || !optionC || !optionD || !correctAnswer) {
+    // 🔥 VALIDATION (safe + correct for object structure)
+    if (
+      !question ||
+      !options ||
+      !options.A ||
+      !options.B ||
+      !options.C ||
+      !options.D ||
+      !correctAnswer
+    ) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
       });
     }
 
+    // 🔥 Create question
     const newQuestion = await Question.create({
       question,
       options: {
-        A: optionA,
-        B: optionB,
-        C: optionC,
-        D: optionD,
+        A: options.A,
+        B: options.B,
+        C: options.C,
+        D: options.D,
       },
       correctAnswer,
       explanation,
-      subject,
+      subject: subject || "General",
       year,
     });
 
@@ -43,7 +50,15 @@ export const createQuestion = async (req, res) => {
     });
 
   } catch (err) {
-    console.log(err);
+    console.log("CREATE QUESTION ERROR:", err);
+
+    // Duplicate question (same question + year)
+    if (err.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: "Question already exists for this year",
+      });
+    }
 
     return res.status(500).json({
       success: false,
@@ -51,6 +66,58 @@ export const createQuestion = async (req, res) => {
     });
   }
 };
+
+
+
+// export const createQuestion = async (req, res) => {
+//   try {
+//     const {
+//       question,
+//       optionA,
+//       optionB,
+//       optionC,
+//       optionD,
+//       correctAnswer,
+//       explanation,
+//       subject,
+//       year,
+//     } = req.body;
+
+//     if (!question || !optionA || !optionB || !optionC || !optionD || !correctAnswer) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "All fields are required",
+//       });
+//     }
+
+//     const newQuestion = await Question.create({
+//       question,
+//       options: {
+//         A: optionA,
+//         B: optionB,
+//         C: optionC,
+//         D: optionD,
+//       },
+//       correctAnswer,
+//       explanation,
+//       subject,
+//       year,
+//     });
+
+//     return res.status(201).json({
+//       success: true,
+//       data: newQuestion,
+//     });
+
+//   } catch (err) {
+//     console.log(err);
+
+//     return res.status(500).json({
+//       success: false,
+//       message: err.message,
+//     });
+//   }
+// };
 // export const createQuestion = async (req, res) => {
 //   try {
 //     const question = await Question.create(req.body);
