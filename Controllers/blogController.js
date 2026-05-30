@@ -22,7 +22,7 @@ export const createBlog = async (req, res) => {
 
         res.status(201).json({
             success: true,
-            blog,
+            data: blog,
         });
 
     } catch (error) {
