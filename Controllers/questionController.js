@@ -4,22 +4,46 @@ import Question from "../Models/QuestionModel.js";
 // Create a new question(admin)
 export const createQuestion = async (req, res) => {
   try {
-    const question = await Question.create(req.body);
+    const {
+      question,
+      optionA,
+      optionB,
+      optionC,
+      optionD,
+      correctAnswer,
+      explanation,
+      subject,
+      year,
+    } = req.body;
+
+    if (!question || !optionA || !optionB || !optionC || !optionD || !correctAnswer) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+
+    const newQuestion = await Question.create({
+      question,
+      options: {
+        A: optionA,
+        B: optionB,
+        C: optionC,
+        D: optionD,
+      },
+      correctAnswer,
+      explanation,
+      subject,
+      year,
+    });
 
     return res.status(201).json({
       success: true,
-      data: question,
+      data: newQuestion,
     });
 
   } catch (err) {
-
-    // MongoDB duplicate error
-    if (err.code === 11000) {
-      return res.status(400).json({
-        success: false,
-        message: "Question for this year already exists",
-      });
-    }
+    console.log(err);
 
     return res.status(500).json({
       success: false,
@@ -27,6 +51,34 @@ export const createQuestion = async (req, res) => {
     });
   }
 };
+// export const createQuestion = async (req, res) => {
+//   try {
+//     const question = await Question.create(req.body);
+
+//     return res.status(201).json({
+//       success: true,
+//       data: question,
+//     });
+
+//   } catch (err) {
+
+//     // MongoDB duplicate error
+//     if (err.code === 11000) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Question for this year already exists",
+//       });
+//     }
+
+//     return res.status(500).json({
+//       success: false,
+//       message: err.message,
+//     });
+//   }
+// };
+
+
+
 
 // Get all questions(public)
 export const getAllQuestions = async (req, res) => {
