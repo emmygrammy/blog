@@ -4,6 +4,15 @@ import Blog from '../Models/blogModel.js';
 export const createBlog = async (req, res) => {
     try {
         const { title, content } = req.body;
+        //validation
+        if (!title || !content) {
+        return res.status(400).json({
+            success: false,
+            msg: "Title and content are required",
+        });
+        }
+
+        
 
         const blog = await Blog.create({
             title,
