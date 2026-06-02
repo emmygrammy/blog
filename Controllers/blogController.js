@@ -1,35 +1,37 @@
 import Blog from '../Models/blogModel.js';
 
 // CREATE BLOG (content only)
+
 export const createBlog = async (req, res) => {
-    try {
-        const { title, content } = req.body;
-        //validation
-        if (!title || !content) {
-        return res.status(400).json({
-            success: false,
-            msg: "Title and content are required",
-        });
-        }
+  try {
+    const { title, content } = req.body;
 
-        
-
-        const blog = await Blog.create({
-            title,
-            content,
-            admin: req.admin._id,
-        });
-
-        res.status(201).json({
-            success: true,
-            data: blog,
-        });
-
-    } catch (error) {
-        res.status(500).json({ msg: error.message });
+    if (!title || !content) {
+      return res.status(400).json({
+        success: false,
+        msg: "Title and content are required",
+      });
     }
-};
 
+    const blog = await Blog.create({
+      title,
+      content,
+      admin: req.admin._id,
+      image: {
+        url: null,
+        public_id: null,
+      },
+    });
+
+    res.status(201).json({
+      success: true,
+      data: blog,
+    });
+
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};
 
 // GET ALL BLOGS
 export const getBlogs = async (req, res) => {

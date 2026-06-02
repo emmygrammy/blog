@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import cloudinary from "../config/cloudinary.js";
 
 const blogSchema = new mongoose.Schema(
   {
@@ -40,15 +39,15 @@ blogSchema.post("findOneAndDelete", async function (doc) {
   }
 });
 
-// 🗑️ Delete hook (deleteOne)
-blogSchema.post("deleteOne", { document: true }, async function () {
-  try {
-    if (this?.image?.public_id) {
-      await cloudinary.uploader.destroy(this.image.public_id);
-    }
-  } catch (err) {
-    console.error("Cloudinary delete failed:", err.message);
-  }
-});
+// // 🗑️ Delete hook (deleteOne)
+// blogSchema.post("deleteOne", { document: true }, async function () {
+//   try {
+//     if (this?.image?.public_id) {
+//       await cloudinary.uploader.destroy(this.image.public_id);
+//     }
+//   } catch (err) {
+//     console.error("Cloudinary delete failed:", err.message);
+//   }
+// });
 
 export default mongoose.model("Blog", blogSchema);
